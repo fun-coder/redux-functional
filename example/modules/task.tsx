@@ -19,17 +19,30 @@ const tasksActions = createAction<TaskActions>(['add']);
 
 type ActionParamType<T> = T extends FAction<(...args: infer U) => any> ? U : never;
 
-interface FReducer<K> {
-  (state: any, ...args: ActionParamType<K>): any
+interface FReducer<S, K> {
+  (state?: S, ...args: ActionParamType<K>): S
 }
+
 
 // (state: any, action: Action) => any
 
-const toReducer = <S, T extends FAction<any>>(action: T, reducers: FReducer<T>): Reducer<S> => {
-  const actionName = action.toString();
-  return (state?: S, action: IAction<any>) => {
+type PReducer<S> = (state: S, action: IAction<any>) => S
 
-  }
+const toReducers = <S, T extends FAction<any>>(...paires: [T, FReducer<S, T>][]): PReducer<S> => {
+  const actionHandles = paires.reduce((map: Record<string, PReducer<S>>, [faction, reducer]) => {
+    return ({ ...map, [faction.toString()]: reducer });
+  }, {});
+  return (state: S, action: IAction<any>): S => {
+    actionHandles
+    return action.type === actionName ? reducer(state, ...action.payload) : state;
+  };
+}
+
+const toReducer = <S, T extends FAction<any>>(fAction: T, reducer: FReducer<S, T>): (state: S, action: IAction<any>) => S => {
+  const actionName = fAction.toString();
+  return (state: S, action: IAction<any>): S => {
+    return action.type === actionName ? reducer(state, ...action.payload) : state;
+  };
 };
 
 interface TaskState {
@@ -37,7 +50,8 @@ interface TaskState {
   list: number[]
 }
 
-toReducer(tasksActions.add, (state: Record<string, Task>, task: Task) => {});
+toReducer(tasksActions.add, (state: Record<string, Task>, task: Task) => {
+});
 
 const taskReducers: Reducer = combineReducers({
   data: <T extends Action>(state: any, action: T) => 1
