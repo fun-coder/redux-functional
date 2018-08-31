@@ -6,14 +6,15 @@ export type FAction<T> = {
   (dispatch: Dispatch): (...args: ParamTypes<T>) => Promise<any>,
 }
 
-type FActions<T> = {
+export type FActions<T> = {
   [K in keyof T]: FAction<T[K]>
 }
 
-export const createAction = <T>(actions: (keyof T)[]): FActions<T> => {
+export const createAction = <T>(prefix: string, actions: (keyof T)[]): FActions<T> => {
   return actions.reduce((map, action) => {
-    const actionFn = (dispatch: Dispatch) => (...args: any[]) => dispatch({ type: action, payload: args });
-    Object.defineProperty(actionFn, 'toString', { value: () => action });
+    const type = `@${prefix}/${action}`;
+    const actionFn = (dispatch: Dispatch) => (...args: any[]) => dispatch({ type: type, payload: args });
+    Object.defineProperty(actionFn, 'toString', { value: () => type });
     return {
       ...map,
       [action]: actionFn

@@ -1,7 +1,6 @@
-import { Action, combineReducers, createStore, Dispatch, Reducer } from "redux";
+import { combineReducers, createStore, Reducer } from "redux";
 import { createAction } from "../../src";
-import { FAction } from "../../src/actions";
-import { IAction } from "../../src/Types";
+import { ReducerMap } from "../../src/ReducerMap";
 
 interface Task {
   id: number,
@@ -11,58 +10,42 @@ interface Task {
 
 interface TaskActions {
   add: (task: Task) => any
-  patch: (id: number, task: Task) => any
+  patch: (id: number, task: Partial<Task>) => any
 }
 
-const tasksActions = createAction<TaskActions>(['add']);
+const moduleName = 'TaskModule';
 
+const actions = createAction<TaskActions>(moduleName, ['add', 'patch']);
 
-type ActionParamType<T> = T extends FAction<(...args: infer U) => any> ? U : never;
+const dataReducer = new ReducerMap<Record<number, Task>>({})
+  .watch(actions.add, (state, task: Task) => ({ ...state, [task.id]: task }))
+  .watch(actions.patch, (state, id: number, task: Partial<Task>) => {
+    const originTask = state[id] || {};
+    return { ...state, [id]: { ...originTask, ...task } };
+  })
+  .toReducer();
 
-interface FReducer<S, K> {
-  (state?: S, ...args: ActionParamType<K>): S
-}
+const listReducer = new ReducerMap<number[]>([])
+  .watch(actions.add, (state, task: Task) => [...state, task.id])
+  .toReducer();
 
-
-// (state: any, action: Action) => any
-
-type PReducer<S> = (state: S, action: IAction<any>) => S
-
-const toReducers = <S, T extends FAction<any>>(...paires: [T, FReducer<S, T>][]): PReducer<S> => {
-  const actionHandles = paires.reduce((map: Record<string, PReducer<S>>, [faction, reducer]) => {
-    return ({ ...map, [faction.toString()]: reducer });
-  }, {});
-  return (state: S, action: IAction<any>): S => {
-    actionHandles
-    return action.type === actionName ? reducer(state, ...action.payload) : state;
-  };
-}
-
-const toReducer = <S, T extends FAction<any>>(fAction: T, reducer: FReducer<S, T>): (state: S, action: IAction<any>) => S => {
-  const actionName = fAction.toString();
-  return (state: S, action: IAction<any>): S => {
-    return action.type === actionName ? reducer(state, ...action.payload) : state;
-  };
-};
-
-interface TaskState {
-  data: Record<string, Task>,
-  list: number[]
-}
-
-toReducer(tasksActions.add, (state: Record<string, Task>, task: Task) => {
+const reducers = combineReducers({
+  data: dataReducer,
+  list: listReducer
 });
 
-const taskReducers: Reducer = combineReducers({
-  data: <T extends Action>(state: any, action: T) => 1
-});
+// interface TaskState {
+//   data: Record<string, Task>,
+//   list: number[]
+// }
 
 export const TaskModule = {
-  actions: tasksActions,
-  reducers: taskReducers
+  name: moduleName,
+  actions,
+  reducers
 };
 
 const store = createStore(() => 1);
 
-TaskModule.actions.add(store.dispatch)(1)
-TaskModule.actions.patch(store.dispatch)(1)
+TaskModule.actions.add(store.dispatch)({ id: 1, name: '', done: false });
+TaskModule.actions.patch(store.dispatch)(1, { name: 'a' });
