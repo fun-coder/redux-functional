@@ -1,22 +1,22 @@
 import { combineReducers, createStore, Reducer } from "redux";
+import { createSelector } from "reselect";
 import { createAction } from "../../src";
+import { FActions } from "../../src/actions";
 import { ReducerMap } from "../../src/ReducerMap";
-
-interface Task {
-  id: number,
-  name: string,
-  done: boolean
-}
-
-interface TaskActions {
-  add: (task: Task) => any
-  patch: (id: number, task: Partial<Task>) => any
-}
+import { moduleSelect } from "../../src/selectors";
+import { Task } from "../apis/tasks";
 
 const moduleName = 'TaskModule';
 
-const actions = createAction<TaskActions>(moduleName, ['add', 'patch']);
+// Define Actions
+export interface TaskActions {
+  add: (task: Task) => Promise<any>
+  patch: (id: number, task: Partial<Task>) => Promise<any>
+}
 
+const actions: FActions<TaskActions> = createAction<TaskActions>(moduleName, ['add', 'patch']);
+
+// Define Reducers
 const dataReducer = new ReducerMap<Record<number, Task>>({})
   .watch(actions.add, (state, task: Task) => ({ ...state, [task.id]: task }))
   .watch(actions.patch, (state, id: number, task: Partial<Task>) => {
@@ -31,21 +31,31 @@ const listReducer = new ReducerMap<number[]>([])
 
 const reducers = combineReducers({
   data: dataReducer,
-  list: listReducer
+  list: listReducer,
 });
 
-// interface TaskState {
-//   data: Record<string, Task>,
-//   list: number[]
-// }
+// Define Selectors
+export interface TaskState {
+  data: Record<string, Task>,
+  list: number[]
+}
+
+const getTaskIds = moduleSelect(moduleName, (s: TaskState) => s.list);
+const getTasks = moduleSelect(moduleName, (s: TaskState) => s.data);
+const getTask = (id: number) => moduleSelect(moduleName, (s: TaskState) => s.data[id]);
+
+const getAllTasks = createSelector(
+  [getTaskIds, getTasks],
+  (ids: number[], data: Record<number, Task>) => ids.map(id => data[id])
+);
+
 
 export const TaskModule = {
   name: moduleName,
   actions,
-  reducers
+  reducers,
+  selector: {
+    getAllTasks,
+    getTask
+  }
 };
-
-const store = createStore(() => 1);
-
-TaskModule.actions.add(store.dispatch)({ id: 1, name: '', done: false });
-TaskModule.actions.patch(store.dispatch)(1, { name: 'a' });

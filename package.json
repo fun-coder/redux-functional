@@ -25,7 +25,9 @@
     "@types/react-dom": "^16.0.7",
     "@types/react-redux": "^6.0.6",
     "@types/redux": "^3.6.0",
+    "@types/reselect": "^2.2.0",
     "parcel-bundler": "^1.9.7",
+    "reselect": "^3.0.1",
     "typescript": "^3.0.1"
   },
   "dependencies": {

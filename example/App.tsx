@@ -1,8 +1,7 @@
 import { Component, default as React } from "react";
-import { HomeContainer } from "./Home";
+import { HomePage } from "./Home";
 
 interface AppProps {
-
 }
 
 export class App extends Component {
@@ -10,7 +9,7 @@ export class App extends Component {
 
   render() {
     return <div >
-      <HomeContainer></HomeContainer>
+      <HomePage />
     </div>
   }
 }
