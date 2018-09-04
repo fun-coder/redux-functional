@@ -1,18 +1,16 @@
 import { default as React, MouseEvent } from "react";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
-import { ContainerActions, mapActions } from "../src/actions";
-import { ProcessType } from "../src/process";
+import { ContainerAction } from "../src/type";
 import { Task } from "./apis/tasks";
-import { TaskActions, TaskModule } from "./modules/task";
+import { TaskModule } from "./modules/task";
 import { createTask, toggleTask } from "./processes/tasks";
 import { RootState } from "./state";
 
 export interface HomePageProps {
-  taskActions?: ContainerActions<TaskActions>,
   tasks?: Task[],
-  createTask?: ProcessType<typeof createTask>
-  toggleTask?: ProcessType<typeof toggleTask>
+  createTask?: ContainerAction<typeof createTask>
+  toggleTask?: ContainerAction<typeof toggleTask>
 }
 
 class HomeContainer extends React.Component<HomePageProps> {
@@ -25,8 +23,8 @@ class HomeContainer extends React.Component<HomePageProps> {
         <input type="text" value={ taskName } onChange={ this.changeTaskName }/>
         <button onClick={ this.createTask }>Create</button>
       </div>
-      <div>{ this.props.tasks!.map(task => <div>
-        <input type="checkbox" checked={ task.done } onClick={this.toggleTask} value={task.id}/>
+      <div>{ this.props.tasks!.map(task => <div key={ task.id }>
+        <input type="checkbox" checked={ task.done } onClick={ this.toggleTask } value={ task.id }/>
         <span>{ task.name }</span>
       </div>) }</div>
     </div>;
@@ -55,7 +53,6 @@ const mapStateToProps = (state: RootState, props: HomePageProps) => {
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
-    taskActions: mapActions(dispatch, TaskModule.actions),
     createTask: createTask(dispatch),
     toggleTask: toggleTask(dispatch)
   }

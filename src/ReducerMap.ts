@@ -1,5 +1,5 @@
 import { AnyAction, Reducer } from "redux";
-import { FAction } from "./actions";
+import { FAction } from "./type";
 
 type ActionParamType<T> = T extends FAction<(...args: infer U) => any> ? U : any;
 

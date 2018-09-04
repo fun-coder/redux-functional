@@ -1,12 +1,17 @@
 import { combineReducers, createStore, Reducer } from "redux";
 import { createSelector } from "reselect";
 import { createAction } from "../../src";
-import { FActions } from "../../src/actions";
 import { ReducerMap } from "../../src/ReducerMap";
 import { moduleSelect } from "../../src/selectors";
+import { FActions } from "../../src/type";
 import { Task } from "../apis/tasks";
 
 const moduleName = 'TaskModule';
+
+export interface TaskState {
+  data: Record<string, Task>,
+  list: number[]
+}
 
 // Define Actions
 export interface TaskActions {
@@ -35,10 +40,6 @@ const reducers = combineReducers({
 });
 
 // Define Selectors
-export interface TaskState {
-  data: Record<string, Task>,
-  list: number[]
-}
 
 const getTaskIds = moduleSelect(moduleName, (s: TaskState) => s.list);
 const getTasks = moduleSelect(moduleName, (s: TaskState) => s.data);
@@ -48,7 +49,6 @@ const getAllTasks = createSelector(
   [getTaskIds, getTasks],
   (ids: number[], data: Record<number, Task>) => ids.map(id => data[id])
 );
-
 
 export const TaskModule = {
   name: moduleName,
