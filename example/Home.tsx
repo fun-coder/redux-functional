@@ -1,11 +1,11 @@
 import { default as React, MouseEvent } from "react";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
-import { ContainerAction } from "../src/type";
 import { Task } from "./apis/tasks";
 import { TaskModule } from "./modules/task";
 import { createTask, toggleTask } from "./processes/tasks";
 import { RootState } from "./state";
+import { ContainerAction } from "../index";
 
 export interface HomePageProps {
   tasks?: Task[],

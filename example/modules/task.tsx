@@ -1,9 +1,6 @@
-import { combineReducers, createStore, Reducer } from "redux";
-import { createSelector } from "reselect";
-import { createAction } from "../../src";
-import { ReducerMap } from "../../src/ReducerMap";
-import { moduleSelect } from "../../src/selectors";
-import { FActions } from "../../src/type";
+import { combineReducers } from "redux";
+import { createSelector } from 'reselect';
+import { createAction, FActions, moduleSelect, ReducerMap } from "../../index";
 import { Task } from "../apis/tasks";
 
 const moduleName = 'TaskModule';

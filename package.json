@@ -4,6 +4,7 @@
   "description": "Make everything in function for redux",
   "main": "index.js",
   "scripts": {
+    "start": "parcel ./example/index.html",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

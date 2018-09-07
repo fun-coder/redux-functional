@@ -1,6 +1,6 @@
-import { Process } from "../../src/process";
 import { TaskModule } from "../modules/task";
 import * as TaskApi from '../apis/tasks';
+import { Process } from "../../index";
 
 export const toggleTask = Process.create(
   { patchTask: TaskModule.actions.patch },

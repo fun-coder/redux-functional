@@ -1,4 +1,4 @@
-import { AnyAction, Dispatch, Store } from "redux";
+import { AnyAction, Dispatch, MiddlewareAPI } from "redux";
 import { mapActions } from "./actions";
 import { ContainerActions, FAction, ParamTypes, SelectionRunner } from "./type";
 
@@ -11,14 +11,14 @@ export const Process = {
     map[name] = { dependencies, handler };
     return (dispatch: Dispatch) => (...args: ParamTypes<ProcessCallType<P>>) => dispatch({ type: name, payload: args });
   },
-  register: (store: Store) => (next: Dispatch) => {
+  register: ({ getState }: MiddlewareAPI<any, any>) => (next: Dispatch) => {
     const dispatch = (action: AnyAction) => {
       const process = map[action.type];
       if (process) {
         if (!process.builtDependencies) {
           process.builtDependencies = mapActions(dispatch, process.dependencies);
         }
-        const state = store.getState();
+        const state = getState();
         return process.handler(
           process.builtDependencies,
           (selector: (state: any) => any) => selector(state)

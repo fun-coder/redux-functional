@@ -1,5 +1,5 @@
 import { Dispatch } from "redux";
-import { ContainerActions, FActions, ParamTypes } from "./type";
+import { ContainerActions, FActions } from "./type";
 
 export const createAction = <T>(prefix: string, actions: (keyof T)[]): FActions<T> => {
   return actions.reduce((map, action) => {
