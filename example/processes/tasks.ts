@@ -22,7 +22,6 @@ export const createTask = Process.create(
     toggleTask: toggleTask,
   },
   ({ addTask, toggleTask }) => async (taskName: string) => {
-    console.log('create task', taskName);
     const task = await TaskApi.create(taskName);
     await addTask(task);
     return toggleTask(task.id, false);

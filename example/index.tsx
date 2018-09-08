@@ -11,7 +11,6 @@ const reducer = combineReducers({
   [TaskModule.name]: TaskModule.reducers
 });
 
-// console.log('create store', Process.register({getState: () => 1, dispatch: (a: AnyAction) => a}));
 const store = createStore(reducer, composeWithDevTools(applyMiddleware(Process.register)));
 
 ReactDOM.render(
