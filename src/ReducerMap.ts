@@ -1,5 +1,5 @@
-import { AnyAction, Reducer } from "redux";
-import { FAction } from "./type";
+import { Reducer } from 'redux';
+import { FAction } from './type';
 
 type ActionParamType<T> = T extends FAction<(...args: infer U) => any> ? U : any;
 
@@ -22,7 +22,7 @@ export class ReducerMap<S> {
   toReducer(): Reducer<S> {
     const defaultValue = this.defaultValue;
     const maps = this.maps;
-    return (state: S = defaultValue, action: AnyAction): S => {
+    return (state: S = defaultValue, action: any): S => {
       const handle = maps[action.type];
       return handle ? handle(state, ...action.payload) : state;
     };

@@ -1,9 +1,9 @@
-import { Dispatch } from "redux";
+import { Action, Dispatch } from 'redux';
 
 export type ParamTypes<T> = T extends (...args: infer U) => any ? U : never;
 
 export type FAction<T> = {
-  (dispatch: Dispatch): (...args: ParamTypes<T>) => any,
+  (dispatch: Dispatch<any>): (...args: ParamTypes<T>) => any,
   toString(): string
 }
 
@@ -20,3 +20,7 @@ export type ContainerAction<T> = T extends FAction<infer U>
   : T extends (...args: infer U) => any ? (...args: U) => Promise<any> : any;
 
 export type SelectionRunner = <T extends (state: any) => any>(selector: T) => ReturnType<T>
+
+export interface PAction<T = any> extends Action<string> {
+  payload: T
+}

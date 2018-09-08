@@ -1,4 +1,4 @@
-import { combineReducers } from "redux";
+import { combineReducers } from 'redux';
 import { createSelector } from 'reselect';
 import { createAction, FActions, moduleSelect, ReducerMap } from "../../index";
 import { Task } from "../apis/tasks";
@@ -16,7 +16,7 @@ export interface TaskActions {
   patch: (id: number, task: Partial<Task>) => Promise<any>
 }
 
-const actions: FActions<TaskActions> = createAction<TaskActions>(moduleName, ['add', 'patch']);
+const actions = createAction<TaskActions>(moduleName, ['add', 'patch']);
 
 // Define Reducers
 const dataReducer = new ReducerMap<Record<number, Task>>({})

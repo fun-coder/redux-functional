@@ -1,10 +1,10 @@
 import { default as React, MouseEvent } from "react";
-import { connect } from "react-redux";
-import { Dispatch } from "redux";
-import { Task } from "./apis/tasks";
-import { TaskModule } from "./modules/task";
-import { createTask, toggleTask } from "./processes/tasks";
-import { RootState } from "./state";
+import { connect } from 'react-redux';
+import { Action, Dispatch } from 'redux';
+import { Task } from './apis/tasks';
+import { TaskModule } from './modules/task';
+import { createTask, toggleTask } from './processes/tasks';
+import { RootState } from './state';
 import { ContainerAction } from "../index";
 
 export interface HomePageProps {
@@ -45,13 +45,13 @@ class HomeContainer extends React.Component<HomePageProps> {
   }
 }
 
-const mapStateToProps = (state: RootState, props: HomePageProps) => {
+const mapStateToProps = (state: RootState, props: HomePageProps): HomePageProps => {
   return {
     tasks: TaskModule.selector.getAllTasks(state)
   };
 };
 
-const mapDispatchToProps = (dispatch: Dispatch) => {
+const mapDispatchToProps = <T extends Action>(dispatch: Dispatch<T>, ): HomePageProps => {
   return {
     createTask: createTask(dispatch),
     toggleTask: toggleTask(dispatch)
