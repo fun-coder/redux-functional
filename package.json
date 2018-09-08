@@ -6,6 +6,7 @@
   "scripts": {
     "start": "parcel ./example/index.html",
     "build": "webpack -c ./webpack.config.js",
+    "prepublish": "npm run build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
