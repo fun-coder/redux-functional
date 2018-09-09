@@ -1,6 +1,6 @@
 {
   "name": "@qlee/redux-functional",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Make everything in function for redux",
   "main": "index.js",
   "scripts": {
