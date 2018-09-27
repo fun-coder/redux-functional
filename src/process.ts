@@ -2,6 +2,7 @@ import { Action, Dispatch, MiddlewareAPI } from 'redux';
 import { mapActions } from './actions';
 import { ContainerActions, FAction, PAction, ParamTypes, SelectionRunner } from "./type";
 
+let dependencyCached = true;
 const map: Record<string, any> = {};
 
 type ProcessCallType<T> = T extends (dependencies: any, state: any) => infer U ? U : never;
@@ -18,7 +19,7 @@ export const Process = {
     const dispatch = (action: PAction) => {
       const process = map[action.type];
       if (process) {
-        if (!process.builtDependencies) {
+        if (!dependencyCached || !process.builtDependencies) {
           process.builtDependencies = mapActions(dispatch, process.dependencies);
         }
         return process.handler(
@@ -31,4 +32,7 @@ export const Process = {
 
     return dispatch;
   },
+  setCache(cached: boolean) {
+    dependencyCached = cached;
+  }
 };
