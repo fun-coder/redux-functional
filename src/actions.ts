@@ -3,14 +3,16 @@ import { ContainerActions, FActions, PAction } from './type';
 
 export const createAction = <T>(prefix: string, actions: (keyof T)[]): FActions<T> => {
   return actions.reduce((map, action) => {
-    const type = `@${prefix}/${action}`;
-    const actionFn = (dispatch: Dispatch<PAction>) => (...args: any[]) => dispatch({ type: type, payload: args });
-    Object.defineProperty(actionFn, 'toString', { value: () => type });
-    return {
-      ...map,
-      [action]: actionFn
-    };
+    const actionFn = createSingleAction(prefix, action as string);
+    return { ...map, [action]: actionFn };
   }, {}) as FActions<T>
+};
+
+export const createSingleAction = <T extends any[]>(prefix: string, actionName: string) => {
+  const type = `@${prefix}/${actionName}`;
+  const actionFn = (dispatch: Dispatch<PAction>) => (...args: T) => dispatch({ type: type, payload: args });
+  Object.defineProperty(actionFn, 'toString', { value: () => type });
+  return actionFn;
 };
 
 export const mapActions =

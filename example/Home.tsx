@@ -2,19 +2,27 @@ import { default as React, MouseEvent } from "react";
 import { connect } from 'react-redux';
 import { Action, Dispatch } from 'redux';
 import { Task } from './apis/tasks';
-import { TaskModule } from './modules/task';
+import { deleteTasks, TaskModule } from './modules/task';
 import { createTask, toggleTask } from './processes/tasks';
 import { RootState } from './state';
-import { ContainerAction } from "../index";
 
 export interface HomePageProps {
-  tasks?: Task[],
-  createTask?: ContainerAction<typeof createTask>
-  toggleTask?: ContainerAction<typeof toggleTask>
+  tasks: Task[],
+  createTask: (name: string) => Promise<any>
+  toggleTask: (id: number, done?: boolean) => Promise<any>
+  deleteTask: (...ids: number[]) => Promise<any>
 }
 
-class HomeContainer extends React.Component<HomePageProps> {
-  state = { taskName: '' };
+
+class HomeContainer extends React.Component<HomePageProps, any> {
+  static defaultProps = {
+    tasks: [],
+    createTask: () => Promise.resolve(null),
+    toggleTask: () => Promise.resolve(null),
+    deleteTask: () => Promise.resolve(null)
+  };
+
+  state = { taskName: '', error: null };
 
   render() {
     const { taskName } = this.state;
@@ -26,6 +34,7 @@ class HomeContainer extends React.Component<HomePageProps> {
       <div>{ this.props.tasks!.map(task => <div key={ task.id }>
         <input type="checkbox" checked={ task.done } onClick={ this.toggleTask } value={ task.id }/>
         <span>{ task.name }</span>
+        <button onClick={ () => this.props.deleteTask(task.id) }>x</button>
       </div>) }</div>
     </div>;
   }
@@ -45,16 +54,17 @@ class HomeContainer extends React.Component<HomePageProps> {
   }
 }
 
-const mapStateToProps = (state: RootState, props: HomePageProps): HomePageProps => {
+const mapStateToProps = (state: RootState, props: HomePageProps) => {
   return {
     tasks: TaskModule.selector.getAllTasks(state)
   };
 };
 
-const mapDispatchToProps = <T extends Action>(dispatch: Dispatch<T>, ): HomePageProps => {
+const mapDispatchToProps = <T extends Action>(dispatch: Dispatch): any => {
   return {
     createTask: createTask(dispatch),
-    toggleTask: toggleTask(dispatch)
+    toggleTask: toggleTask(dispatch),
+    deleteTask: deleteTasks(dispatch),
   }
 };
 

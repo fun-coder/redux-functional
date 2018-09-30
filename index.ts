@@ -1,4 +1,4 @@
-export {createAction} from './src/actions';
+export { createAction, createSingleAction } from './src/actions';
 export { ReducerMap } from './src/ReducerMap';
 export { moduleSelect } from './src/selectors';
 export { FActions, ContainerAction } from './src/type';

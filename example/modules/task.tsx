@@ -1,7 +1,8 @@
 import { combineReducers } from 'redux';
 import { createSelector } from 'reselect';
-import { createAction, FActions, moduleSelect, ReducerMap } from "../../index";
+import { createAction, createSingleAction, FActions, moduleSelect, ReducerMap } from "../../index";
 import { Task } from "../apis/tasks";
+import { number } from "prop-types";
 
 const moduleName = 'TaskModule';
 
@@ -16,6 +17,8 @@ export interface TaskActions {
   patch: (id: number, task: Partial<Task>) => Promise<any>
 }
 
+export const deleteTasks = createSingleAction<number[]>(moduleName, 'deleteTask');
+
 const actions = createAction<TaskActions>(moduleName, ['add', 'patch']);
 
 // Define Reducers
@@ -24,6 +27,11 @@ const dataReducer = new ReducerMap<Record<number, Task>>({})
   .watch(actions.patch, (state, id: number, task: Partial<Task>) => {
     const originTask = state[id] || {};
     return { ...state, [id]: { ...originTask, ...task } };
+  })
+  .watch(deleteTasks, (state, ...ids) => {
+    const newState = { ...state };
+    ids.forEach(id => delete newState[id]);
+    return newState;
   })
   .toReducer();
 
@@ -44,7 +52,7 @@ const getTask = (id: number) => moduleSelect(moduleName, (s: TaskState) => s.dat
 
 const getAllTasks = createSelector(
   [getTaskIds, getTasks],
-  (ids: number[], data: Record<number, Task>) => ids.map(id => data[id])
+  (ids: number[], data: Record<number, Task>) => ids.map(id => data[id]).filter(task => task)
 );
 
 export const TaskModule = {
