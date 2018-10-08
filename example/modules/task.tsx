@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux';
 import { createSelector } from 'reselect';
-import { createAction, createSingleAction, FActions, moduleSelect, ReducerMap } from "../../index";
+import { createActions, createAction, FActions, moduleSelect, ReducerMap } from "../../index";
 import { Task } from "../apis/tasks";
 import { number } from "prop-types";
 
@@ -17,9 +17,9 @@ export interface TaskActions {
   patch: (id: number, task: Partial<Task>) => Promise<any>
 }
 
-export const deleteTasks = createSingleAction<number[]>(moduleName, 'deleteTask');
+export const deleteTasks = createAction<number[]>(moduleName, 'deleteTask');
 
-const actions = createAction<TaskActions>(moduleName, ['add', 'patch']);
+const actions = createActions<TaskActions>(moduleName, ['add', 'patch']);
 
 // Define Reducers
 const dataReducer = new ReducerMap<Record<number, Task>>({})

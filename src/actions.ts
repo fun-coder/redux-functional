@@ -1,14 +1,14 @@
 import { Dispatch } from 'redux';
 import { ContainerActions, FActions, PAction } from './type';
 
-export const createAction = <T>(prefix: string, actions: (keyof T)[]): FActions<T> => {
+export const createActions = <T>(prefix: string, actions: (keyof T)[]): FActions<T> => {
   return actions.reduce((map, action) => {
-    const actionFn = createSingleAction(prefix, action as string);
+    const actionFn = createAction(prefix, action as string);
     return { ...map, [action]: actionFn };
   }, {}) as FActions<T>
 };
 
-export const createSingleAction = <T extends any[]>(prefix: string, actionName: string) => {
+export const createAction = <T extends any[]>(prefix: string, actionName: string) => {
   const type = `@${prefix}/${actionName}`;
   const actionFn = (dispatch: Dispatch<PAction>) => (...args: T) => dispatch({ type: type, payload: args });
   Object.defineProperty(actionFn, 'toString', { value: () => type });
