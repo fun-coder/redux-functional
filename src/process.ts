@@ -6,9 +6,9 @@ let dependencyCached = true;
 const map: Record<string, any> = {};
 
 export const Process = {
-  create<T, K, P extends (actions: ActionCreatorsMapObject<PAction>, state: SelectionRunner) => any>(dependencies: T, handler: P, name: string): ActionCreator<PAction> {
+  create<T, K, P extends (actions: ActionCreatorsMapObject<PAction>, state: SelectionRunner) => any>(dependencies: T, handler: P, name: string): ActionCreator<Promise<PAction>> {
     map[name] = { dependencies, handler };
-    return (...args) => ({
+    return async (...args) => ({
       type: name,
       payload: args
     });
