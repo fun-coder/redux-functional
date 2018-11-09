@@ -1,8 +1,7 @@
 import { combineReducers } from 'redux';
 import { createSelector } from 'reselect';
-import { createActions, createAction, FActions, moduleSelect, ReducerMap } from "../../index";
+import { createAction, createActions, moduleSelect, ReducerMap } from "../../index";
 import { Task } from "../apis/tasks";
-import { number } from "prop-types";
 
 const moduleName = 'TaskModule';
 
@@ -30,7 +29,7 @@ const dataReducer = new ReducerMap<Record<number, Task>>({})
   })
   .watch(deleteTasks, (state, ...ids) => {
     const newState = { ...state };
-    ids.forEach(id => delete newState[id]);
+    ids.forEach((id) => delete newState[id]);
     return newState;
   })
   .toReducer();

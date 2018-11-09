@@ -1,6 +1,5 @@
 import { default as React, MouseEvent } from "react";
 import { connect } from 'react-redux';
-import { Action, Dispatch } from 'redux';
 import { Task } from './apis/tasks';
 import { deleteTasks, TaskModule } from './modules/task';
 import { createTask, toggleTask } from './processes/tasks';
@@ -8,11 +7,10 @@ import { RootState } from './state';
 
 export interface HomePageProps {
   tasks: Task[],
-  createTask: (name: string) => Promise<any>
-  toggleTask: (id: number, done?: boolean) => Promise<any>
-  deleteTask: (...ids: number[]) => Promise<any>
+  createTask: (name: string) => any
+  toggleTask: (id: number, done?: boolean) => any
+  deleteTask: (...ids: number[]) => any
 }
-
 
 class HomeContainer extends React.Component<HomePageProps, any> {
   static defaultProps = {
@@ -28,14 +26,14 @@ class HomeContainer extends React.Component<HomePageProps, any> {
     const { taskName } = this.state;
     return <div className="container">
       <div className="creation">
-        <input type="text" value={ taskName } onChange={ this.changeTaskName }/>
-        <button onClick={ this.createTask }>Create</button>
+        <input type="text" value={taskName} onChange={this.changeTaskName}/>
+        <button onClick={this.createTask}>Create</button>
       </div>
-      <div>{ this.props.tasks!.map(task => <div key={ task.id }>
-        <input type="checkbox" checked={ task.done } onClick={ this.toggleTask } value={ task.id }/>
-        <span>{ task.name }</span>
-        <button onClick={ () => this.props.deleteTask(task.id) }>x</button>
-      </div>) }</div>
+      <div>{this.props.tasks!.map(task => <div key={task.id}>
+        <input type="checkbox" checked={task.done} onClick={this.toggleTask} value={task.id}/>
+        <span>{task.name}</span>
+        <button onClick={() => this.props.deleteTask(task.id)}>x</button>
+      </div>)}</div>
     </div>;
   }
 
@@ -60,12 +58,10 @@ const mapStateToProps = (state: RootState, props: HomePageProps) => {
   };
 };
 
-const mapDispatchToProps = <T extends Action>(dispatch: Dispatch): any => {
-  return {
-    createTask: createTask(dispatch),
-    toggleTask: toggleTask(dispatch),
-    deleteTask: deleteTasks(dispatch),
-  }
+const mapDispatchToProps = {
+  createTask,
+  toggleTask,
+  deleteTasks,
 };
 
 export const HomePage = connect(mapStateToProps, mapDispatchToProps)(HomeContainer);

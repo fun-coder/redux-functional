@@ -1,16 +1,14 @@
-import { Action, Dispatch, MiddlewareAPI } from 'redux';
+import { Action, ActionCreator, ActionCreatorsMapObject, Dispatch, MiddlewareAPI } from 'redux';
 import { mapActions } from './actions';
-import { ContainerActions, FAction, PAction, ParamTypes, SelectionRunner } from "./type";
+import { PAction, SelectionRunner } from "./type";
 
 let dependencyCached = true;
 const map: Record<string, any> = {};
 
-type ProcessCallType<T> = T extends (dependencies: any, state: any) => infer U ? U : never;
-
 export const Process = {
-  create<T, K, P extends (actions: ContainerActions<T>, state: SelectionRunner) => any>(dependencies: T, handler: P, name: string): FAction<ProcessCallType<P>> {
+  create<T, K, P extends (actions: ActionCreatorsMapObject<PAction>, state: SelectionRunner) => any>(dependencies: T, handler: P, name: string): ActionCreator<PAction> {
     map[name] = { dependencies, handler };
-    return (dispatch: Dispatch<any>) => async (...args: ParamTypes<ProcessCallType<P>>) => dispatch({
+    return (...args) => ({
       type: name,
       payload: args
     });

@@ -1,7 +1,6 @@
 import { Reducer } from 'redux';
-import { FAction } from './type';
 
-type ActionParamType<T> = T extends FAction<(...args: infer U) => any> ? U : any;
+type ActionParamType<T> = T extends (...args: infer U) => any ? U : any;
 
 export interface FReducer<S, K> {
   (state: S, ...args: ActionParamType<K>): S
