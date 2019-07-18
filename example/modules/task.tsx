@@ -12,13 +12,13 @@ export interface TaskState {
 
 // Define Actions
 export interface TaskActions {
-  add: (task: Task) => Promise<any>
-  patch: (id: number, task: Partial<Task>) => Promise<any>
+  add: (task: Task) => void
+  patch: (id: number, task: Partial<Task>) => void,
+  delete: (id: number) => void
 }
 
-export const deleteTasks = createAction<number[]>(moduleName, 'deleteTask');
 
-const actions = createActions<TaskActions>(moduleName, ['add', 'patch']);
+const actions = createActions<TaskActions>(moduleName, ['add', 'patch', 'delete']);
 
 // Define Reducers
 const dataReducer = new ReducerMap<Record<number, Task>>({})
@@ -27,9 +27,9 @@ const dataReducer = new ReducerMap<Record<number, Task>>({})
     const originTask = state[id] || {};
     return { ...state, [id]: { ...originTask, ...task } };
   })
-  .watch(deleteTasks, (state, ...ids) => {
+  .watch(actions.delete, (state, id) => {
     const newState = { ...state };
-    ids.forEach((id) => delete newState[id]);
+    delete newState[id];
     return newState;
   })
   .toReducer();

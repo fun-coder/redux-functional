@@ -1,6 +1,6 @@
 {
   "name": "@qlee/redux-functional",
-  "version": "0.2.3",
+  "version": "0.3.0",
   "description": "Make everything in function for redux",
   "main": "index.js",
   "scripts": {
@@ -26,7 +26,6 @@
   "devDependencies": {
     "babel-loader": "^8.0.2",
     "babel-preset-env": "^1.7.0",
-    "parcel-bundler": "^1.9.7",
     "redux-devtools-extension": "^2.13.5",
     "reselect": "^3.0.1",
     "ts-loader": "^5.0.0",
@@ -39,6 +38,7 @@
     "@types/react": "^16.4.13",
     "@types/react-dom": "^16.0.7",
     "@types/react-redux": "^6.0.9",
+    "parcel-bundler": "^1.12.3",
     "react": "16.3.2",
     "react-dom": "16.4.2",
     "react-redux": "^5.0.7",

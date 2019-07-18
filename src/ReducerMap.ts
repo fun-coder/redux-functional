@@ -12,7 +12,7 @@ export class ReducerMap<S> {
   constructor(private defaultValue: S) {
   }
 
-  watch<T>(action: T, handler: FReducer<S, T>): ReducerMap<S> {
+  watch<T extends { toString(): string }>(action: T, handler: FReducer<S, T>): ReducerMap<S> {
     const actionName = action.toString();
     this.maps[actionName] = handler;
     return this;
